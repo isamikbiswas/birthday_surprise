@@ -119,7 +119,7 @@ button:active{transform:translateY(2px);}
 
 <!-- Cake GIF -->
 <div class="cake-wrap">
-<img id="cakeGif" <img src="https://raw.githubusercontent.com/isamikbiswas/birthday_surprise/main/thumb.gif" alt="Birthday Cake"> alt="Birthday Cake" class="cake-gif hidden">
+<img id="cakeGif" src="" alt="Birthday Cake" class="cake-gif hidden">
 </div>
 
 <!-- Controls -->
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function revealCake(){
     cakeBtn.classList.add('hidden');
     musicBtn.classList.remove('hidden');
-    cakeGif.src = "C:/Users/isami/OneDrive/Desktop/html_css/birthday/thumb.gif" ; // your gif
+    cakeGif.src = "https://github.com/isamikbiswas/birthday_surprise/blob/main/thumb.gif?raw=true" ; // your gif
     cakeGif.classList.remove('hidden');
     cakeGif.animate([{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration:600,iterations:1,easing:'ease-out'});
   }
@@ -217,6 +217,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 </script>
 </body>
 </html>
+
 
 
 
