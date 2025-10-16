@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birthday Surprise 🎂</title>
+<style>
+:root{
+  --pink1:#ffd6e8; --pink2:#f6b9d8; --accent:#ff6fa3; --gold:#f2c94c;
+  --card-bg: rgba(255,255,255,0.14); --glass: blur(6px);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,Poppins,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+body{
+  background: linear-gradient(135deg,var(--pink1), #e8d5f2 60%);
+  overflow-x:hidden;color:#2b1b2b;
+}
+body::before{
+  content:"";position:fixed;inset:0;
+  background: radial-gradient(60% 40% at 10% 10%, rgba(255,255,255,0.08), transparent),
+             radial-gradient(50% 30% at 90% 80%, rgba(255,255,255,0.04), transparent);
+  pointer-events:none; z-index:0;
+}
+.app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;position:relative;z-index:1;}
+.card{width:100%;max-width:980px;background:var(--card-bg);border-radius:20px;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,0.12);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);text-align:center;margin:12px;}
+h1{margin:6px 0 4px;font-size:clamp(18px,3.4vw,32px);color:#2b1b2b;}
+p{margin:6px 0 14px;color:#2b1b2b;opacity:0.95;}
+.cat-img{width:180px;height:auto;border-radius:14px;display:block;margin:12px auto;box-shadow:0 6px 20px rgba(0,0,0,0.12);}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+button{appearance:none;border:0;padding:12px 18px;border-radius:999px;background:linear-gradient(180deg,var(--accent),#ff4f8d);color:white;font-weight:600;font-size:15px;cursor:pointer;box-shadow:0 6px 18px rgba(255,111,163,0.18);transition:transform .15s ease, box-shadow .15s ease;touch-action:manipulation;}
+button:active{transform:translateY(2px);}
+.btn-ghost{background:transparent;color:var(--accent);border:2px solid rgba(255,111,163,0.12);box-shadow:none;}
+.hidden{display:none !important;opacity:0;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* Balloon container */
+#balloonArea{position:fixed;inset:0;pointer-events:none;z-index:3;overflow:hidden;}
+.balloon{position:absolute;bottom:-20vh;width:48px;height:64px;border-radius:50% 50% 48% 48%;display:flex;align-items:flex-end;justify-content:center;transform-origin:center bottom;animation:floatUp linear infinite;box-shadow:0 8px 16px rgba(0,0,0,0.12);}
+.balloon::after{content:"";width:2px;height:40px;background:rgba(0,0,0,0.06);position:absolute;bottom:-36px;left:50%;transform:translateX(-50%);}
+@keyframes floatUp{0%{transform:translateY(0) rotate(-6deg);opacity:0}10%{opacity:1}100%{transform:translateY(-140vh) rotate(12deg);opacity:0}}
+
+/* Sprinkles */
+.sprinkle{position:fixed;top:-10vh;font-size:18px;z-index:5;pointer-events:none;animation:fallSpr 3.2s linear forwards;}
+@keyframes fallSpr{to{transform:translateY(120vh) rotate(360deg);opacity:0}}
+
+/* Cake GIF */
+.cake-wrap{margin:14px auto 6px;display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:4;}
+.cake-gif{width:260px;max-width:85vw;display:block;margin:12px auto;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.12);animation:cakePulse 0.6s ease-out 1;}
+@keyframes cakePulse{0%{transform:scale(0.95);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
+
+#finalMsg{margin-top:8px;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06));z-index:4;}
+.quote{font-style:italic;color:#5b2b46;margin-top:6px;}
+
+/* Banner flags */
+.banner-wrapper{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;margin-bottom:20px;}
+.banner-line{display:flex;justify-content:center;align-items:flex-start;gap:8px;position:relative;margin:10px 0;}
+.banner-line::before{content:"";position:absolute;top:10px;left:5%;right:5%;height:2px;background:#8b5d33;border-radius:2px;z-index:-1;}
+.flag{position:relative;width:50px;height:60px;display:flex;justify-content:center;align-items:center;font-weight:700;font-size:18px;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,0.2);clip-path:polygon(0 0,100% 0,100% 80%,50% 100%,0 80%);transform-origin:top center;animation:sway 3s ease-in-out infinite alternate;}
+.flag:nth-child(4n+1){background:#ffe066;} /* yellow */
+.flag:nth-child(4n+2){background:#ffadad;} /* pink */
+.flag:nth-child(4n+3){background:#a0c4ff;} /* blue */
+.flag:nth-child(4n+4){background:#ffffff;color:#333;} /* white */
+@keyframes sway{0%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}100%{transform:rotate(-3deg)}
+}
+@media(max-width:520px){.flag{width:40px;height:50px;font-size:14px;}}
+
+/* Responsive */
+@media(max-width:520px){.cat-img{width:140px}.cake-gif{width:200px}button{padding:10px 14px;font-size:14px;}}
+</style>
+</head>
+<body>
+<div id="balloonArea"></div>
+<main class="app">
+<div class="card" id="appCard">
+
+<!-- PAGE 1 -->
+<section id="introPage" class="page active">
+<img id="happyCat" src="C:\Users\isami\OneDrive\Desktop\html_css\birthday\0008f02640455fc5633cd93af515e67f.gif" alt="happy cat" class="cat-img">
+<h1>I heard it was your birthday! 🎂</h1>
+<p>If yes, press <strong>Yes</strong> — if no, press <strong>No</strong> 😼</p>
+<div class="btn-row">
+<button id="btnYes">Yes 💖</button>
+<button id="btnNo" class="btn-ghost">No 😿</button>
+</div>
+
+<div id="noPanel" class="hidden" style="margin-top:14px">
+<img id="sadCat" src="C:\Users\isami\OneDrive\Desktop\html_css\birthday\d7f587da442a54025daf47091fe26ba0.gif" alt="sad cat" class="cat-img">
+<p>Don't lie to me... I know it's your birthday 😿</p>
+<div class="btn-row"><button id="btnBack" class="btn-ghost">Go Back</button></div>
+</div>
+</section>
+
+<!-- PAGE 2 -->
+<section id="partyPage" class="page">
+<h1>🎉 Happy Birthday Gopika 💕</h1>
+<p>Let's make it special — one step at a time!</p>
+
+<!-- Banner -->
+<div class="banner-wrapper">
+  <div class="banner-line">
+    <div class="flag">H</div>
+    <div class="flag">A</div>
+    <div class="flag">P</div>
+    <div class="flag">P</div>
+    <div class="flag">Y</div>
+  </div>
+  <div class="banner-line">
+    <div class="flag">B</div>
+    <div class="flag">I</div>
+    <div class="flag">R</div>
+    <div class="flag">T</div>
+    <div class="flag">H</div>
+    <div class="flag">D</div>
+    <div class="flag">A</div>
+    <div class="flag">Y</div>
+  </div>
+</div>
+
+<!-- Cake GIF -->
+<div class="cake-wrap">
+<img id="cakeGif" src="" alt="Birthday Cake" class="cake-gif hidden">
+</div>
+
+<!-- Controls -->
+<div class="btn-row" style="margin-top:8px">
+<button id="decorateBtn">Decorate ✨</button>
+<button id="balloonBtn" class="hidden">Blow the Balloons 🎈</button>
+<button id="cakeBtn" class="hidden">Order Cake 🎂</button>
+<button id="musicBtn" class="hidden">Play Music ▶️</button>
+<button id="blowBtn" class="hidden">Blow Candles 🕯️</button>
+</div>
+
+<div id="finalMsg" class="hidden">
+<h2>🎉 Happy Birthday! 🎉</h2>
+<div class="quote">"Happy Birthday to a beautiful soul — may your day be filled with laughter, love, and magic!"</div>
+<p>Celebrate the way you love the most 💖</p>
+</div>
+
+<audio id="song" src="C:\Users\isami\OneDrive\Desktop\html_css\birthday\HAPPY BIRTHDAY TO YOU  PIANO INSTRUMENTAL  BEST HAPPY BITHDAY MUSIC 2021.mp3"></audio>
+</section>
+
+</div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  const introPage = document.getElementById('introPage');
+  const partyPage = document.getElementById('partyPage');
+  const btnYes = document.getElementById('btnYes');
+  const btnNo = document.getElementById('btnNo');
+  const noPanel = document.getElementById('noPanel');
+  const btnBack = document.getElementById('btnBack');
+
+  const decorateBtn = document.getElementById('decorateBtn');
+  const balloonBtn = document.getElementById('balloonBtn');
+  const cakeBtn = document.getElementById('cakeBtn');
+  const musicBtn = document.getElementById('musicBtn');
+  const blowBtn = document.getElementById('blowBtn');
+
+  const balloonArea = document.getElementById('balloonArea');
+  const finalMsg = document.getElementById('finalMsg');
+  const cakeGif = document.getElementById('cakeGif');
+  const song = document.getElementById('song');
+
+  // Page navigation
+  btnYes.addEventListener('click',()=>{introPage.classList.remove('active');partyPage.classList.add('active');});
+  btnNo.addEventListener('click',()=>{noPanel.classList.remove('hidden');btnYes.style.display='none';btnNo.style.display='none';});
+  btnBack.addEventListener('click',()=>{noPanel.classList.add('hidden');btnYes.style.display='';btnNo.style.display='';});
+
+  // Sprinkles
+  let sprInterval=null;
+  function startSprinkles(){if(sprInterval)return; sprInterval=setInterval(()=>{
+    const el=document.createElement('div');el.className='sprinkle';
+    const icons=['✨','💖','🌟','🎀'];
+    el.textContent=icons[Math.floor(Math.random()*icons.length)];
+    el.style.left=Math.random()*100+'vw';
+    el.style.fontSize=(12+Math.random()*18)+'px';
+    el.style.transform='rotate('+(Math.random()*360)+'deg)';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),3600);
+  },160);}
+
+  // Balloons
+  function spawnBalloon(){const b=document.createElement('div');b.className='balloon';const size=36+Math.random()*42;b.style.width=size+'px';b.style.height=(size*1.25)+'px';b.style.left=(Math.random()*95)+'vw';const sat=70+Math.random()*20;const light=60-Math.random()*8;b.style.background=`hsl(${Math.random()*360},${sat}%,${light}%)`;const dur=8+Math.random()*8;b.style.animationDuration=dur+'s';balloonArea.appendChild(b);setTimeout(()=>b.remove(),(dur+1)*1000);}
+  function startBalloons(){let count=0; const timer=setInterval(()=>{spawnBalloon();count++;if(count>40)clearInterval(timer);},200);}
+
+  // Cake reveal
+  function revealCake(){
+    cakeBtn.classList.add('hidden');
+    musicBtn.classList.remove('hidden');
+    cakeGif.src = "C:/Users/isami/OneDrive/Desktop/html_css/birthday/thumb.gif" ; // your gif
+    cakeGif.classList.remove('hidden');
+    cakeGif.animate([{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration:600,iterations:1,easing:'ease-out'});
+  }
+
+  // Music
+  function playMusic(){song.currentTime=0;const p=song.play();if(p!==undefined)p.catch(()=>{});}
+
+  // Blow candles
+  function blowCandles(){
+    for(let i=0;i<24;i++){const el=document.createElement('div');el.className='sprinkle';
+      const icons=['🎉','✨','💫','💖'];el.textContent=icons[Math.floor(Math.random()*icons.length)];
+      el.style.left=(Math.random()*90+5)+'vw';el.style.top='40vh';
+      el.style.fontSize=(12+Math.random()*18)+'px';
+      el.style.transform='rotate('+(Math.random()*360)+'deg)';document.body.appendChild(el);setTimeout(()=>el.remove(),3600);}
+    finalMsg.classList.remove('hidden');
+  }
+
+  // Button chain
+  decorateBtn.addEventListener('click',()=>{startSprinkles();decorateBtn.classList.add('hidden');balloonBtn.classList.remove('hidden');});
+  balloonBtn.addEventListener('click',()=>{startBalloons();balloonBtn.classList.add('hidden');cakeBtn.classList.remove('hidden');});
+  cakeBtn.addEventListener('click',()=>{revealCake();});
+  musicBtn.addEventListener('click',()=>{playMusic();musicBtn.classList.add('hidden');blowBtn.classList.remove('hidden');});
+  blowBtn.addEventListener('click',()=>{blowCandles();blowBtn.classList.add('hidden');});
+});
+</script>
+</body>
+</html>
