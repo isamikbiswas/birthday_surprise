@@ -67,6 +67,11 @@ button:active{transform:translateY(2px);}
 
 /* Responsive */
 @media(max-width:520px){.cat-img{width:140px}.cake-gif{width:200px}button{padding:10px 14px;font-size:14px;}}
+/* NO button runaway effect */
+#btnNo{
+  position: relative;
+  transition: transform 0.25s ease;
+}
 </style>
 </head>
 <body>
@@ -214,9 +219,24 @@ document.addEventListener('DOMContentLoaded', ()=>{
   musicBtn.addEventListener('click',()=>{playMusic();musicBtn.classList.add('hidden');blowBtn.classList.remove('hidden');});
   blowBtn.addEventListener('click',()=>{blowCandles();blowBtn.classList.add('hidden');});
 });
+// NO button runaway logic
+const btnNo = document.getElementById('btnNo');
+
+function moveNoButton(){
+  const x = Math.random() * 200 - 100; // horizontal
+  const y = Math.random() * 120 - 60;  // vertical
+  btnNo.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+// Desktop hover
+btnNo.addEventListener('mouseenter', moveNoButton);
+
+// Mobile tap
+btnNo.addEventListener('click', moveNoButton);
 </script>
 </body>
 </html>
+
 
 
 
