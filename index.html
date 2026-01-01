@@ -75,7 +75,7 @@ button:active{transform:translateY(2px);}
 /* NO button – untouchable & fast */
 #btnNo{
   position: relative;
-  transition: transform 0.15s ease; /* fast movement */
+  transition: transform 0.5s ease; /* fast movement */
   touch-action: none;              /* block mobile tap */
   user-select: none;               /* prevent text selection */
 }
@@ -279,11 +279,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(e) e.preventDefault();
 
     const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const rangeX=isMobile?320:160;
-    const rangeY=isMobile?220:100;
+    const rangeX=isMobile?470:250;
+    const rangeY=isMobile?350:170;
 
-    const x=Math.random()*rangeX-rangeX/2;
-    const y=Math.random()*rangeY-rangeY/2;
+    const x = (Math.random() - 0.5) * rangeX * 1.2;
+const y = (Math.random() - 0.5) * rangeY * 1.2;
 
     btnNo.style.transform=`translate(${x}px,${y}px)`;
   }
@@ -299,6 +299,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 </script>
 </body>
 </html>
+
 
 
 
