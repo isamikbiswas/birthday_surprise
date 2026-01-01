@@ -72,6 +72,13 @@ button:active{transform:translateY(2px);}
   position: relative;
   transition: transform 0.25s ease;
 }
+/* NO button – untouchable & fast */
+#btnNo{
+  position: relative;
+  transition: transform 0.15s ease; /* fast movement */
+  touch-action: none;              /* block mobile tap */
+  user-select: none;               /* prevent text selection */
+}
 </style>
 </head>
 <body>
@@ -154,8 +161,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const partyPage = document.getElementById('partyPage');
   const btnYes = document.getElementById('btnYes');
   const btnNo = document.getElementById('btnNo');
-  const noPanel = document.getElementById('noPanel');
-  const btnBack = document.getElementById('btnBack');
 
   const decorateBtn = document.getElementById('decorateBtn');
   const balloonBtn = document.getElementById('balloonBtn');
@@ -168,74 +173,133 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const cakeGif = document.getElementById('cakeGif');
   const song = document.getElementById('song');
 
-  // Page navigation
-  btnYes.addEventListener('click',()=>{introPage.classList.remove('active');partyPage.classList.add('active');});
-  btnNo.addEventListener('click',()=>{noPanel.classList.remove('hidden');btnYes.style.display='none';btnNo.style.display='none';});
-  btnBack.addEventListener('click',()=>{noPanel.classList.add('hidden');btnYes.style.display='';btnNo.style.display='';});
+  /* PAGE NAVIGATION */
+  btnYes.addEventListener('click',()=>{
+    introPage.classList.remove('active');
+    partyPage.classList.add('active');
+  });
 
-  // Sprinkles
+  /* SPRINKLES */
   let sprInterval=null;
-  function startSprinkles(){if(sprInterval)return; sprInterval=setInterval(()=>{
-    const el=document.createElement('div');el.className='sprinkle';
-    const icons=['✨','💖','🌟','🎀'];
-    el.textContent=icons[Math.floor(Math.random()*icons.length)];
-    el.style.left=Math.random()*100+'vw';
-    el.style.fontSize=(12+Math.random()*18)+'px';
-    el.style.transform='rotate('+(Math.random()*360)+'deg)';
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),3600);
-  },160);}
+  function startSprinkles(){
+    if(sprInterval) return;
+    sprInterval=setInterval(()=>{
+      const el=document.createElement('div');
+      el.className='sprinkle';
+      const icons=['✨','💖','🌟','🎀'];
+      el.textContent=icons[Math.floor(Math.random()*icons.length)];
+      el.style.left=Math.random()*100+'vw';
+      el.style.fontSize=(12+Math.random()*18)+'px';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),3600);
+    },160);
+  }
 
-  // Balloons
-  function spawnBalloon(){const b=document.createElement('div');b.className='balloon';const size=36+Math.random()*42;b.style.width=size+'px';b.style.height=(size*1.25)+'px';b.style.left=(Math.random()*95)+'vw';const sat=70+Math.random()*20;const light=60-Math.random()*8;b.style.background=`hsl(${Math.random()*360},${sat}%,${light}%)`;const dur=8+Math.random()*8;b.style.animationDuration=dur+'s';balloonArea.appendChild(b);setTimeout(()=>b.remove(),(dur+1)*1000);}
-  function startBalloons(){let count=0; const timer=setInterval(()=>{spawnBalloon();count++;if(count>40)clearInterval(timer);},200);}
+  /* BALLOONS */
+  function spawnBalloon(){
+    const b=document.createElement('div');
+    b.className='balloon';
+    const size=36+Math.random()*42;
+    b.style.width=size+'px';
+    b.style.height=(size*1.25)+'px';
+    b.style.left=(Math.random()*95)+'vw';
+    b.style.background=`hsl(${Math.random()*360},80%,60%)`;
+    const dur=8+Math.random()*8;
+    b.style.animationDuration=dur+'s';
+    balloonArea.appendChild(b);
+    setTimeout(()=>b.remove(),(dur+1)*1000);
+  }
 
-  // Cake reveal
+  function startBalloons(){
+    let count=0;
+    const timer=setInterval(()=>{
+      spawnBalloon();
+      count++;
+      if(count>40) clearInterval(timer);
+    },200);
+  }
+
+  /* CAKE */
   function revealCake(){
     cakeBtn.classList.add('hidden');
     musicBtn.classList.remove('hidden');
-    cakeGif.src = "https://github.com/isamikbiswas/birthday_surprise/blob/main/thumb.gif?raw=true" ; // your gif
+    cakeGif.src="https://github.com/isamikbiswas/birthday_surprise/blob/main/thumb.gif?raw=true";
     cakeGif.classList.remove('hidden');
-    cakeGif.animate([{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration:600,iterations:1,easing:'ease-out'});
   }
 
-  // Music
-  function playMusic(){song.currentTime=0;const p=song.play();if(p!==undefined)p.catch(()=>{});}
+  /* MUSIC */
+  function playMusic(){
+    song.currentTime=0;
+    song.play().catch(()=>{});
+  }
 
-  // Blow candles
+  /* FINAL */
   function blowCandles(){
-    for(let i=0;i<24;i++){const el=document.createElement('div');el.className='sprinkle';
-      const icons=['🎉','✨','💫','💖'];el.textContent=icons[Math.floor(Math.random()*icons.length)];
-      el.style.left=(Math.random()*90+5)+'vw';el.style.top='40vh';
+    for(let i=0;i<24;i++){
+      const el=document.createElement('div');
+      el.className='sprinkle';
+      el.textContent=['🎉','✨','💫','💖'][Math.floor(Math.random()*4)];
+      el.style.left=(Math.random()*90+5)+'vw';
+      el.style.top='40vh';
       el.style.fontSize=(12+Math.random()*18)+'px';
-      el.style.transform='rotate('+(Math.random()*360)+'deg)';document.body.appendChild(el);setTimeout(()=>el.remove(),3600);}
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),3600);
+    }
     finalMsg.classList.remove('hidden');
   }
 
-  // Button chain
-  decorateBtn.addEventListener('click',()=>{startSprinkles();decorateBtn.classList.add('hidden');balloonBtn.classList.remove('hidden');});
-  balloonBtn.addEventListener('click',()=>{startBalloons();balloonBtn.classList.add('hidden');cakeBtn.classList.remove('hidden');});
-  cakeBtn.addEventListener('click',()=>{revealCake();});
-  musicBtn.addEventListener('click',()=>{playMusic();musicBtn.classList.add('hidden');blowBtn.classList.remove('hidden');});
-  blowBtn.addEventListener('click',()=>{blowCandles();blowBtn.classList.add('hidden');});
+  /* BUTTON CHAIN */
+  decorateBtn.addEventListener('click',()=>{
+    startSprinkles();
+    decorateBtn.classList.add('hidden');
+    balloonBtn.classList.remove('hidden');
+  });
+
+  balloonBtn.addEventListener('click',()=>{
+    startBalloons();
+    balloonBtn.classList.add('hidden');
+    cakeBtn.classList.remove('hidden');
+  });
+
+  cakeBtn.addEventListener('click', revealCake);
+
+  musicBtn.addEventListener('click',()=>{
+    playMusic();
+    musicBtn.classList.add('hidden');
+    blowBtn.classList.remove('hidden');
+  });
+
+  blowBtn.addEventListener('click',()=>{
+    blowCandles();
+    blowBtn.classList.add('hidden');
+  });
+
+  /* 🔥 NO BUTTON – UNTOUCHABLE & FAST */
+  function moveNoFast(e){
+    if(e) e.preventDefault();
+
+    const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const rangeX=isMobile?320:160;
+    const rangeY=isMobile?220:100;
+
+    const x=Math.random()*rangeX-rangeX/2;
+    const y=Math.random()*rangeY-rangeY/2;
+
+    btnNo.style.transform=`translate(${x}px,${y}px)`;
+  }
+
+  btnNo.addEventListener('mouseenter', moveNoFast);
+  btnNo.addEventListener('touchstart', moveNoFast, { passive:false });
+  btnNo.addEventListener('click', (e)=>{
+    e.preventDefault();
+    moveNoFast(e);
+  });
+
 });
-// NO button runaway logic
-const btnNo = document.getElementById('btnNo');
-
-function moveNoButton(){
-  const x = Math.random() * 200 - 100; // horizontal
-  const y = Math.random() * 120 - 60;  // vertical
-  btnNo.style.transform = `translate(${x}px, ${y}px)`;
-}
-
-// Desktop hover
-btnNo.addEventListener('mouseenter', moveNoButton);
-
-// Mobile tap
-btnNo.addEventListener('click', moveNoButton);
 </script>
 </body>
 </html>
+
 
 
 
